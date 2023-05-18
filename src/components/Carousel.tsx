@@ -2,7 +2,7 @@ import { useState } from 'react';
 import './Carousel.css';
 
 interface PropInterface {
-  data: string[]
+  data: { _id: string, url: string }[]
   isEditing: boolean
 };
 

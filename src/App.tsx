@@ -1,4 +1,4 @@
-import React, { useState, lazy, Suspense } from 'react'
+import { lazy, Suspense } from 'react'
 import './App.css'
 
 import CreatePostForm from './components/CreateEventPost'
@@ -36,14 +36,6 @@ const Timeline = lazy(() => import(
 
 function App() {
 
-  function handleSubmit(e) {
-    e.preventDefault();
-
-    // Trigger re-render
-    // setlatestEvent(timeline.at(-1))
-  }
-
-  
 
   return (
     <>

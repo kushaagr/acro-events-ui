@@ -1,12 +1,31 @@
 import React from 'react';
-import { useState, useReducer } from 'react';
+import { useReducer } from 'react';
 import StyledHeadingInput from './StyledHeadingInput'
 import StyledDatePicker from './StyledDatePicker'
 import StyledDescription from './StyledDescription'
 import StyledImageUploader from './StyledImageUploader'
 import ImageSlider from './ImageSlider'
 
-const initialFormState = {
+
+type Action = { 
+  type: string,
+  newHeading?: string,
+  newDescription?: string,
+  newDate?: string,
+  newImages?: File[],
+  newUploadGlimpse?: string[]
+}
+
+type State = {
+  heading: string,
+  date: string,
+  description: string,
+  images: File[],
+  uploadGlimpse: string[]
+}
+
+
+const initialFormState : State = {
   heading: '',
   date: '',
   description: '',
@@ -15,7 +34,7 @@ const initialFormState = {
 }
 
 
-function reducer(state, action) {
+function reducer(state: State, action: Action) : State | undefined {
   switch (action.type) {
     case 'field_change': {
       return {
@@ -26,8 +45,8 @@ function reducer(state, action) {
         uploadGlimpse: action.newUploadGlimpse ?? state.uploadGlimpse,
       }
     }
-    throw Error('Unknown action:', action.type)
   }
+  throw Error('Unknown action:', action.type);
 }
 
 /*
@@ -69,7 +88,7 @@ function reducer(state, action) {
 }
 */
 
-export default function CreatePostForm(props) {
+export default function CreatePostForm(props: { className: string }) {
   const [formState, dispatch] = useReducer(reducer, initialFormState);
 
   // const [heading, setHeading] = useState('')
