@@ -1,5 +1,4 @@
-import React from 'react';
-import { useReducer } from 'react';
+import React, { MouseEvent, useReducer } from 'react';
 import StyledHeadingInput from './StyledHeadingInput'
 import StyledDatePicker from './StyledDatePicker'
 import StyledDescription from './StyledDescription'
@@ -25,7 +24,7 @@ type State = {
 }
 
 
-const initialFormState : State = {
+const initialFormState = {
   heading: '',
   date: '',
   description: '',
@@ -34,7 +33,7 @@ const initialFormState : State = {
 }
 
 
-function reducer(state: State, action: Action) : State | undefined {
+function reducer(state: State, action : Action) {
   switch (action.type) {
     case 'field_change': {
       return {
@@ -45,8 +44,11 @@ function reducer(state: State, action: Action) : State | undefined {
         uploadGlimpse: action.newUploadGlimpse ?? state.uploadGlimpse,
       }
     }
+    default: {
+      // throw Error('Unknown action:', action.type);
+      return state;
+    }
   }
-  throw Error('Unknown action:', action.type);
 }
 
 /*
@@ -98,9 +100,11 @@ export default function CreatePostForm(props: { className: string }) {
   // const [glimpse, setGlimpse] = useState([])
 
 
-  function handleImages(e) {
+  function handleImages(e: React.ChangeEvent<HTMLInputElement>) {
     const images = [];
     const previews = [];
+    if (!e.target.files) 
+      return;
     for (const file of e.target.files) {
       images.push(file);
       previews.push(URL.createObjectURL(file));
@@ -129,8 +133,9 @@ export default function CreatePostForm(props: { className: string }) {
   }
 
 
-  function clearFields(e) {
-    e.preventDefault()
+  function clearFields(e : React.MouseEvent<HTMLButtonElement>) {
+    e.stopPropagation();
+    // e.preventDefault()
     dispatch({
       type: 'field_change',
       newHeading: '',
@@ -148,7 +153,8 @@ export default function CreatePostForm(props: { className: string }) {
   }
 
 
-  async function handleSubmit(e) {
+  // async function handleSubmit(e: MouseEventHandler<HTMLButtonElement, MouseEvent>) {
+  async function handleSubmit(e: MouseEvent) {
     e.preventDefault()
     const form = new FormData()
     form.append('title', formState.heading);
@@ -185,23 +191,25 @@ export default function CreatePostForm(props: { className: string }) {
             nameProp={'date'}
             valueProp={formState.date}
             // onChangeProp={(e) => setDate(e.target.value)}
-            onChangeProp={(e) => dispatch({
-              type: 'field_change',
-              newDate: e.target.value
-            })}
+            onChangeProp={(e : React.ChangeEvent<HTMLInputElement>) => 
+              dispatch({
+                type: 'field_change',
+                newDate: e.target.value
+              })}
           >When did the event start?*</StyledDatePicker>
         </li>   
 
         <li>
           <StyledHeadingInput
-            name={'title'}
+            nameProp={'title'}
             valueProp={formState.heading}
             placeholderProp={'Event Title?*'}
             // onChangeProp={(e) => setHeading(e.target.value)}
-            onChangeProp={(e) => dispatch({
-              type: 'field_change',
-              newHeading: e.target.value
-            })}
+            onChangeProp={(e : React.ChangeEvent<HTMLInputElement>) => 
+              dispatch({
+                type: 'field_change',
+                newHeading: e.target.value
+              })}
 
           />
         </li>
@@ -224,11 +232,11 @@ export default function CreatePostForm(props: { className: string }) {
             nameProp={'description'}
             valueProp={formState.description}
             // onChangeProp={(e) => setDescription}
-            onChangeProp={(e) => dispatch({
-              type: 'field_change',
-              newDescription: e.target.value
-            })}
-
+            onChangeProp={(e : React.ChangeEvent<HTMLInputElement>) => 
+              dispatch({
+                type: 'field_change',
+                newDescription: e.target.value
+              })}
           >Describe your event...</StyledDescription>
         </li>   
 
