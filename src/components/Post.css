@@ -1,0 +1,53 @@
+form {
+  width: 100%;
+}
+
+.title-area {
+  display: block;
+  width: 100%;
+  font-size: 20px;
+  margin-block: .3rem;
+/*  color: hotpink;*/
+}
+
+.card {
+  padding: 2em;
+}
+
+.upload-button {
+  text-align: center;
+  display: block;
+  width: 100%;
+  border: 5px dashed aquamarine;
+  border-radius: 10px;
+  padding: 20px;
+  transition: background-color 300ms ease-in-out;
+}
+
+.delete-post-button {
+  position: absolute;
+  z-index: 2;
+  right: 10px;
+}
+
+.upload-button:hover {
+  background-color: #eee;
+}
+
+.upload-button:active {
+  background-color: #acacac;
+  transform: scale(.98);
+}
+
+/* Source: https://developer.mozilla.org/en-US/docs/Web/API/File_API/Using_files_from_web_applications */
+.visually-hidden {
+  position: absolute !important;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+}
+
+input.visually-hidden:is(:focus, :focus-within) + label {
+  outline: thin dotted;
+}
