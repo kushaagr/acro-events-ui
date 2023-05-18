@@ -1,14 +1,12 @@
 import React from 'react';
-import { useState, useEffect, useTransition } from 'react'
+import { useState, useEffect } from 'react'
 
 import { 
   VerticalTimeline, 
-  VerticalTimelineElement 
 } from 'react-vertical-timeline-component';
 import 'react-vertical-timeline-component/style.min.css';
 
 import Post from './Post'
-import Carousel from './Carousel'
 
 
 
@@ -52,8 +50,9 @@ export default function Timeline() {
       lineColor={'gray'}
     >
       {
-        timeline.map(evn => (
-          <Post key={evn._id} evn={evn}/>
+        timeline.map((evn) => (
+          <Post key={evn['_id']} evn={evn}/>
+          // <Post key={evn.date} evn={evn}/>
         ))
       }
     </VerticalTimeline>

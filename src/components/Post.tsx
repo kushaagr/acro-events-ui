@@ -5,7 +5,8 @@ import {
 import Carousel from './Carousel'
 import './Post.css'
 
-export default function Post({evn, gIsEdting, gSetIsEditing}) {
+
+export default function Post({evn} : {evn: EventPost}) {
   const [isEditing, setIsEditing] = useState(false)
   const [heading, setHeading] = useState(evn.title)
   const [date, setDate] = useState(
@@ -17,8 +18,8 @@ export default function Post({evn, gIsEdting, gSetIsEditing}) {
   // console.log("Evn.date", evn.date)
 
   // Curried function
-  function handleChange(fn) {
-    return (e) => fn(e.target.value)
+  function handleChange(fn: any) {
+    return (e: React.ChangeEvent<HTMLInputElement>) => fn(e.target.value)
   }
 
 
@@ -92,7 +93,8 @@ export default function Post({evn, gIsEdting, gSetIsEditing}) {
     </React.Fragment>
   );
 
-  const viewTemplate = (
+  /* tslint:disable:no-unused-variable */
+  const _viewTemplate = (
     <React.Fragment>
       
       <div className="date">{(new Date(date)).toDateString()}</div>

@@ -1,10 +1,9 @@
-import React from 'react';
 
-export default function ImageSlider({data}) {
+export default function ImageSlider({data} : { data: string[] }) {
   console.log("Received data =", data, typeof data)
   return (
     <div className="w-full min-h-min py-2 flex overflow-x-auto">
-      {data.map((imgurl) => {
+      {data.map((imgurl: string) => {
         return <img 
           key={imgurl}
           src={imgurl} 

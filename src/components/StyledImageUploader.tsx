@@ -1,12 +1,5 @@
 import React from 'react'
 
-interface InputPropInterface {
-  nameProp: string; 
-  valueProp: any;
-  onChangeProp: any;
-  placeholderProp?: string;
-  children?: any;
-}
 
 export default function StyledImageUplaoder({
     nameProp, onChangeProp, children
