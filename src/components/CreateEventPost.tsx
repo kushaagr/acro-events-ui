@@ -171,6 +171,9 @@ export default function CreatePostForm(props: {
     console.log("Acquired data:", data)
     // const res = await fetch('/api/events', {
     const res = await fetch('https://acro-events.onrender.com/api/events', {
+      headers: {
+        authorization: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjg0NTIyODkyLCJleHAiOjE2ODUxMjc2OTJ9.UE0_W3HBwkaW4vxv339HeJxIDM2jUufhoCSP5cvriaE',
+      },
       method: 'post',
       body: data,
     })

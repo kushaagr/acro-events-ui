@@ -67,6 +67,9 @@ export default function Post({ evn, removePost } : {
     console.log("Acquired data:", form)
 
     const res = await fetch(`https://acro-events.onrender.com/api/events/${formState._id}`, {
+      headers: {
+        authorization: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjg0NTIyODkyLCJleHAiOjE2ODUxMjc2OTJ9.UE0_W3HBwkaW4vxv339HeJxIDM2jUufhoCSP5cvriaE',
+      },
       method: 'PUT',
       body: form,
     })
@@ -92,6 +95,9 @@ export default function Post({ evn, removePost } : {
   const onDelete = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     const res = await fetch(`https://acro-events.onrender.com/api/events/${formState._id}`, {
+      headers: {
+        authorization: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjg0NTIyODkyLCJleHAiOjE2ODUxMjc2OTJ9.UE0_W3HBwkaW4vxv339HeJxIDM2jUufhoCSP5cvriaE',
+      },
       method: 'DELETE',
     });
     const data = await res.json();
