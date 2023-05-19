@@ -3,8 +3,9 @@ import './Carousel.css';
 
 interface PropInterface {
   data: { _id: string, url: string }[]
-  isEditing: boolean
-};
+  removeImage?: (_id: string) => void,
+  isEditing: boolean,
+}
 
 export default function Carousel(props: PropInterface) {
   const [index, setIndex] = useState(0);
@@ -13,13 +14,18 @@ export default function Carousel(props: PropInterface) {
   return (
     <>
       <div className="slideshow-container">
-        
         { 
           images.length !== 0 && 
           <>
             { props.isEditing &&
-              <button className="image-delete-button">
-              <span className="visually-hidden">Delete image</span>
+              <button
+                className="image-delete-button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  props.removeImage?.(props.data[index]._id);
+                }}
+              >
+                <span className="visually-hidden">Delete image</span>
               </button>
             }
             {/*<img src={images[index]} alt="" className="fullframe"/>*/}

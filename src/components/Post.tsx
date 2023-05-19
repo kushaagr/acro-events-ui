@@ -3,72 +3,154 @@ import {
   VerticalTimelineElement 
 } from 'react-vertical-timeline-component';
 import Carousel from './Carousel'
+import StyledImageUploader from './StyledImageUploader'
 import './Post.css'
+import ImageSlider from './ImageSlider';
 
 
-export default function Post({evn} : {evn: EventPost}) {
+const formatDate = (date: string) => new Date(date).toISOString().split('T')[0];
+
+export default function Post({ evn, removePost } : {
+  evn: EventPost,
+  removePost: (_id: string) => void,
+}) {
+
   const [isEditing, setIsEditing] = useState(false)
-  const [heading, setHeading] = useState(evn.title)
-  const [date, setDate] = useState(
-    (new Date(evn.date))
-    // .toLocaleDateString('en-us')
-    .toISOString().split('T')[0]
-  )
+  const [formState, setFormState] = useState(evn);
+  const [copyState, setCopyState] = useState(evn);
 
-  // console.log("Evn.date", evn.date)
+	const [images, setImages] = useState<File[]>([]);
+	const [previews, setPreviews] = useState<string[]>([]);
 
-  // Curried function
-  function handleChange(fn: any) {
-    return (e: React.ChangeEvent<HTMLInputElement>) => fn(e.target.value)
+	const handleImages = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+		const images = [], previews = [];
+		for (const file of e.target.files ?? []) {
+			images.push(file);
+			previews.push(URL.createObjectURL(file));
+		}
+		setImages(images);
+		setPreviews(previews);
+	};
+
+  const removeImage = (_id: string) => setFormState({
+    ...formState,
+    images: formState.images.filter(image => image._id !== _id),
+  });
+
+  function handleChange(
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    field: string
+  ) {
+    return setFormState((formState) => ({
+      ...formState,
+      [field]: e.target.value,
+    }));
   }
 
+  const onSubmit = async (e: React.SyntheticEvent) => {
+
+    e.preventDefault()
+
+    const form = new FormData()
+    form.append('title', formState.title);
+    form.append('date', formState.date.toString());
+
+    // Convert images to required format
+    form.append('images', JSON.stringify(formState.images));
+		images.forEach((image) => {
+			form.append('newImages', image);
+		});
+
+    form.append('description', formState.description)
+
+    console.log("Acquired data:", form)
+
+    const res = await fetch(`https://acro-events.onrender.com/api/events/${formState._id}`, {
+      method: 'PUT',
+      body: form,
+    })
+    console.log("Sent and recieved this:", res)
+
+    const data = await res.json();
+    if (data.success) {
+      setFormState(data.event);
+      setCopyState(data.event);
+      setImages([]);
+      setPreviews([]);
+      setIsEditing(!isEditing);
+    }
+  };
+
+  const onCancel = () => {
+    setFormState(copyState);
+    setImages([]);
+    setPreviews([]);
+    setIsEditing(!isEditing);
+  };
+
+  const onDelete = async (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    const res = await fetch(`https://acro-events.onrender.com/api/events/${formState._id}`, {
+      method: 'DELETE',
+    });
+    const data = await res.json();
+    if (data.success) {
+      removePost(formState._id);
+      setIsEditing(!isEditing);
+    }
+  };
 
   const editingTemplate = (
     <React.Fragment>
-      <form action="">
+      <form onSubmit={onSubmit}>
         <input 
           type="date" 
           className="date-picker" 
-          onChange={handleChange(setDate)}
-          value={date}
+          onChange={(e) => handleChange(e, 'date')}
+          value={formatDate(formState.date.toString())}
         />
 
         {/*{ console.log("Initial date value:", date) }*/}
 
         <input 
           type="text" 
-          value={heading} 
-          onChange={handleChange(setHeading)}
+          value={formState.title} 
+          onChange={(e) => handleChange(e, 'title')}
           className="title-area"/>
         {
-          evn.images.length !== 0 && 
-          <Carousel data={evn.images} isEditing={isEditing}/> 
+          formState.images.length !== 0 && 
+          <Carousel
+            data={formState.images}
+            removeImage={removeImage}
+            isEditing={isEditing}
+          /> 
         }
-        <label className="upload-button" htmlFor="files" >
-          Upload Images
-        </label>
-        <input 
-          id="files" 
-          name="memories"
-          className="visually-hidden"
-          type="file" 
-          multiple 
-          accept="image/*"
-        />
+
+        <StyledImageUploader
+          id={formState._id}
+          nameProp='images'
+          valueProp={formState.images}
+          onChangeProp={handleImages}
+        >Upload images</StyledImageUploader>
+        <ImageSlider data={previews}/>
+
         <label htmlFor="description">
           Want to describe the event?
         </label>
         <textarea name="description" 
           id="description" 
           cols={30} rows={10}
-        >{evn.description}</textarea>
-        <button onClick={() => setIsEditing(!isEditing)}>
+          onChange={(e) => handleChange(e, 'description')}
+        >{formState.description}</textarea>
+
+        <button>
           Save
         </button>
-        <button onClick={() => setIsEditing(!isEditing)}>
+        <button onClick={onCancel}>
           Cancel
         </button>
-        <button onClick={() => setIsEditing(!isEditing)}>
+        <button onClick={onDelete}>
           Delete post
         </button>
       </form>
@@ -79,16 +161,16 @@ export default function Post({evn} : {evn: EventPost}) {
   const editTemplate = (
     <React.Fragment>  
       <div className="date">
-        {(new Date(date)).toDateString()}
+        {(new Date(formState.date)).toDateString()}
       </div>
       <h2 className="title">
-        {evn.title}
+        {formState.title}
       </h2>
       { 
-        evn.images.length !== 0 && 
-        <Carousel data={evn.images} isEditing={isEditing}/> 
+        formState.images.length !== 0 && 
+        <Carousel data={formState.images} isEditing={isEditing}/> 
       }
-      <p>{evn.description}</p>
+      <p>{formState.description}</p>
       <button onClick={() => setIsEditing(!isEditing)}>Edit</button>
     </React.Fragment>
   );
@@ -97,7 +179,7 @@ export default function Post({evn} : {evn: EventPost}) {
   const _viewTemplate = (
     <React.Fragment>
       
-      <div className="date">{(new Date(date)).toDateString()}</div>
+      <div className="date">{(new Date(formState.date)).toDateString()}</div>
       <h2 className="title">{evn.title}</h2>
       { 
         evn.images.length !== 0 && 

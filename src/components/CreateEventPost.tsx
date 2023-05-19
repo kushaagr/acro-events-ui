@@ -90,7 +90,10 @@ function reducer(state, action) {
 }
 */
 
-export default function CreatePostForm(props: { className: string }) {
+export default function CreatePostForm(props: {
+  className: string,
+  setPosts: React.Dispatch<React.SetStateAction<EventPost[]>>,
+}) {
   const [formState, dispatch] = useReducer(reducer, initialFormState);
 
   // const [heading, setHeading] = useState('')
@@ -133,8 +136,8 @@ export default function CreatePostForm(props: { className: string }) {
   }
 
 
-  function clearFields(e : React.MouseEvent<HTMLButtonElement>) {
-    e.stopPropagation();
+  function clearFields(e?: React.MouseEvent<HTMLButtonElement>) {
+    e?.stopPropagation();
     // e.preventDefault()
     dispatch({
       type: 'field_change',
@@ -164,14 +167,19 @@ export default function CreatePostForm(props: { className: string }) {
     formState.images.forEach((imgObj) => form.append('images', imgObj))
     form.append('description', formState.description)
     // const data = new URLSearchParams(form)
-    let data = form
+    const data = form
     console.log("Acquired data:", data)
-    // let res = await fetch('/api/events', {
-    let res = await fetch('https://acro-events.onrender.com/api/events', {
+    // const res = await fetch('/api/events', {
+    const res = await fetch('https://acro-events.onrender.com/api/events', {
       method: 'post',
       body: data,
     })
     console.log("Sent and recieved this:", res)
+    const resData = await res.json();
+    if (resData.success) {
+      props.setPosts((posts) => [resData.event, ...posts]);
+      clearFields();
+    }
   }
 
   const buttonStyles = "rounded bg-blue-500 px-4 py-2 shadow-lg "
@@ -216,6 +224,7 @@ export default function CreatePostForm(props: { className: string }) {
 
         <li>
           <StyledImageUploader
+            id=""
             nameProp='images'
             valueProp={formState.images}
             // onChangeProp={(e) => setImages(e.target.files)}

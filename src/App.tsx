@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useState } from 'react'
 import './App.css'
 
 import CreatePostForm from './components/CreateEventPost'
@@ -36,13 +36,20 @@ const Timeline = lazy(() => import(
 
 function App() {
 
+  const [posts, setPosts] = useState<EventPost[]>([]);
 
   return (
     <>
       <h1 className="text-4xl font-semibold">Hello</h1>
-      <CreatePostForm className={'my-5'}/>
+      <CreatePostForm
+        className={'my-5'}
+        setPosts={setPosts}
+      />
       <Suspense fallback={<div>Loading timeline...</div>}>
-        <Timeline/>
+        <Timeline
+          posts={posts}
+          setPosts={setPosts}
+        />
       </Suspense>
     </>
   )

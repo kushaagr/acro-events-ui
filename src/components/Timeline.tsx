@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 
 import { 
   VerticalTimeline, 
@@ -13,14 +13,14 @@ import Post from './Post'
 async function loadData() {
   console.log("Loading data...");
   
-  let res = await fetch(
+  const res = await fetch(
     // '/api/events'
     // 'http://localhost:8000/api/events/'
     "https://acro-events.onrender.com/api/events"
   );
   console.log("Fetched response:", res, " of type:", typeof res);
   
-  let jsob = await res.json();
+  const jsob = await res.json();
   console.log("Converted response stream to json.\n", 
     typeof jsob, " | ",  jsob); 
   console.log("Loading complete!");
@@ -30,14 +30,19 @@ async function loadData() {
 }
 
 
-export default function Timeline() {
-  const [timeline, setTimeline] = useState([]);
+export default function Timeline(props: {
+  posts: EventPost[],
+  setPosts: React.Dispatch<React.SetStateAction<EventPost[]>>,
+}) {
 
+  const removePost = (_id: string) => props.setPosts(props.posts.filter(({ _id: pid }) => pid !== _id));
+
+  console.log(props);
   // Source : https://www.digitalocean.com/community/tutorials/how-to-handle-async-data-loading-lazy-loading-and-code-splitting-with-react#step-2-preventing-errors-on-unmounted-components
   useEffect(() => {
     let mounted = true;
     loadData().then(posts => {
-      if(mounted) setTimeline(posts)
+      if(mounted) props.setPosts(posts)
     });
 
     return () => { mounted = false };
@@ -50,8 +55,12 @@ export default function Timeline() {
       lineColor={'gray'}
     >
       {
-        timeline.map((evn) => (
-          <Post key={evn['_id']} evn={evn}/>
+        props.posts.map((evn) => (
+          <Post
+            key={evn['_id']}
+            evn={evn}
+            removePost={removePost}
+          />
           // <Post key={evn.date} evn={evn}/>
         ))
       }
