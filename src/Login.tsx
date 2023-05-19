@@ -30,7 +30,7 @@ export default function Login({ setToken }) {
 
     console.log("Trying log in...")
 
-    return fetch('https://acro-events.onrender.com/api/login', {
+    return fetch('https://acro-events.onrender.com/api/auth/login', {
       method: 'POST',
        // headers: {
        //   'Content-Type': 'application/json'
