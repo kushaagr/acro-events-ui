@@ -1,10 +1,18 @@
 import { lazy, Suspense, useState } from 'react'
 import './App.css'
+// import { AppShell, Navbar, Header } from '@mantine/core';
+import { Space, Button, Flex} from '@mantine/core';
+
+
+import useToken from './hooks/useToken';
 
 import CreatePostForm from './components/CreateEventPost'
 const Timeline = lazy(() => import(
   /* webpackChunkName: "AcroEventTimeline" */ 
   './components/Timeline'
+))
+const Login = lazy(() => import(
+  './Login'
 ))
 
 // const evn = getevents[0];
@@ -34,23 +42,55 @@ const Timeline = lazy(() => import(
 
 // http://localhost:8000
 
-function App() {
+type Tabs = 'timeline' | 'login';
 
+function App() {
+  const [tab, setTab] = useState<Tabs>('timeline');
   const [posts, setPosts] = useState<EventPost[]>([]);
+  const { token, setToken } = useToken();
 
   return (
     <>
-      <h1 className="text-4xl font-semibold">Hello</h1>
-      <CreatePostForm
-        className={'my-5'}
-        setPosts={setPosts}
-      />
-      <Suspense fallback={<div>Loading timeline...</div>}>
-        <Timeline
-          posts={posts}
-          setPosts={setPosts}
-        />
-      </Suspense>
+      <Flex>
+        <Button variant='subtle' 
+          onClick={(e) => setTab('login')}
+          disabled={tab==='login'}
+        >
+          Login
+        </Button>
+        <Space w='xl'/>
+        <Button variant='subtle'
+          onClick={(e) => setTab('timeline')}
+          disabled={tab==='timeline'}
+        >
+          Timeline
+        </Button> 
+      </Flex> 
+      <Space h='xl' />
+      {
+        tab === 'login' && 
+        <Suspense>
+          <Login setToken={setToken}/>
+        </Suspense>   
+      }
+      {
+        tab === 'timeline' && (<>
+          <h1 className="text-4xl font-semibold">Hello</h1>
+          { token!==undefined && 
+            <CreatePostForm
+              className={'my-5'}
+              setPosts={setPosts}
+            />
+          }
+          <Suspense fallback={<div>Loading timeline...</div>}>
+            <Timeline
+              posts={posts}
+              setPosts={setPosts}
+              token={token}
+            />
+          </Suspense>
+        </>)
+      }
     </>
   )
 }

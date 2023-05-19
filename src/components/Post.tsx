@@ -10,7 +10,7 @@ import ImageSlider from './ImageSlider';
 
 const formatDate = (date: string) => new Date(date).toISOString().split('T')[0];
 
-export default function Post({ evn, removePost } : {
+export default function Post({ evn, removePost, isAdmin, token } : {
   evn: EventPost,
   removePost: (_id: string) => void,
 }) {
@@ -68,7 +68,8 @@ export default function Post({ evn, removePost } : {
 
     const res = await fetch(`https://acro-events.onrender.com/api/events/${formState._id}`, {
       headers: {
-        authorization: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjg0NTIyODkyLCJleHAiOjE2ODUxMjc2OTJ9.UE0_W3HBwkaW4vxv339HeJxIDM2jUufhoCSP5cvriaE',
+        authorization: token,
+        // authorization: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjg0NTIyODkyLCJleHAiOjE2ODUxMjc2OTJ9.UE0_W3HBwkaW4vxv339HeJxIDM2jUufhoCSP5cvriaE',
       },
       method: 'PUT',
       body: form,
@@ -96,7 +97,8 @@ export default function Post({ evn, removePost } : {
     e.preventDefault();
     const res = await fetch(`https://acro-events.onrender.com/api/events/${formState._id}`, {
       headers: {
-        authorization: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjg0NTIyODkyLCJleHAiOjE2ODUxMjc2OTJ9.UE0_W3HBwkaW4vxv339HeJxIDM2jUufhoCSP5cvriaE',
+        // authorization: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjg0NTIyODkyLCJleHAiOjE2ODUxMjc2OTJ9.UE0_W3HBwkaW4vxv339HeJxIDM2jUufhoCSP5cvriaE',
+        authorization: token,
       },
       method: 'DELETE',
     });
@@ -182,7 +184,7 @@ export default function Post({ evn, removePost } : {
   );
 
   /* tslint:disable:no-unused-variable */
-  const _viewTemplate = (
+  const viewTemplate = (
     <React.Fragment>
       
       <div className="date">{(new Date(formState.date)).toDateString()}</div>
@@ -205,6 +207,11 @@ export default function Post({ evn, removePost } : {
       // date="2011"
     >
 
-    {isEditing ? editingTemplate : editTemplate}
+    {
+      (isAdmin) ? (
+        isEditing ? editingTemplate : editTemplate
+      ) : viewTemplate
+    }
+    
   </VerticalTimelineElement>
 }

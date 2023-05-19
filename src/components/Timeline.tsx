@@ -33,6 +33,7 @@ async function loadData() {
 export default function Timeline(props: {
   posts: EventPost[],
   setPosts: React.Dispatch<React.SetStateAction<EventPost[]>>,
+  token: string
 }) {
 
   const removePost = (_id: string) => props.setPosts(props.posts.filter(({ _id: pid }) => pid !== _id));
@@ -60,6 +61,8 @@ export default function Timeline(props: {
             key={evn['_id']}
             evn={evn}
             removePost={removePost}
+            isAdmin={props.token !== undefined ? true : false}
+            token={props.token}
           />
           // <Post key={evn.date} evn={evn}/>
         ))
