@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import { modals } from '@mantine/modals';
+import { TextInput, Button, Group } from '@mantine/core';
+
 import './Carousel.css';
 
 interface PropInterface {
@@ -10,10 +13,11 @@ interface PropInterface {
 export default function Carousel(props: PropInterface) {
   const [index, setIndex] = useState(0);
   const images = props.data;
+  
 
   return (
     <>
-      <div className="slideshow-container">
+      <div className="slideshow-container" >
         { 
           images.length !== 0 && 
           <>
@@ -29,7 +33,21 @@ export default function Carousel(props: PropInterface) {
               </button>
             }
             {/*<img src={images[index]} alt="" className="fullframe"/>*/}
-            <img src={images[index].url} alt="" className="fullframe"/>
+            <img 
+              src={images[index].url} 
+              alt="" 
+              className="fullframe"
+              onClick={() => {
+                console.log("click")
+                modals.open({
+                  title: 'Event memories',
+                  children: (
+                    <>
+                      <img src={images[index].url} />
+                    </>                  ),
+                });
+              }}
+            />
           </>
         }
         {
