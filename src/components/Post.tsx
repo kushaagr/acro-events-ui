@@ -154,7 +154,7 @@ export default function Post({ evn, removePost, isAdmin, token } : {
           >{formState.description}</textarea>
         </Flex>
         <Flex gap='md' wrap="wrap">
-          <Button variant='outline'>
+          <Button variant='outline' type='submit'>
             Save
           </Button>
           <Button variant='outline' onClick={onCancel}>
