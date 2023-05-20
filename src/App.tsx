@@ -4,7 +4,7 @@ import './App.css'
 import { Space, Button, Flex} from '@mantine/core';
 
 
-import useToken from './hooks/useToken';
+import useToken, { clearToken } from './hooks/useToken';
 
 import CreatePostForm from './components/CreateEventPost'
 const Timeline = lazy(() => import(
@@ -65,6 +65,15 @@ function App() {
         >
           Timeline
         </Button> 
+        <Space w='xl'/>
+        {
+          token!==undefined && 
+          <Button variant='subtle'
+            onClick={(e) => setToken(undefined)}
+          >
+            Logout
+          </Button> 
+        }
       </Flex> 
       <Space h='xl' />
       {
