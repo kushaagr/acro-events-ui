@@ -153,7 +153,7 @@ export default function Post({ evn, removePost, isAdmin, token } : {
             onChange={(e) => handleChange(e, 'description')}
           >{formState.description}</textarea>
         </Flex>
-        <Flex gap='md'>
+        <Flex gap='md' wrap="wrap">
           <Button variant='outline'>
             Save
           </Button>
