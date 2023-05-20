@@ -70,7 +70,10 @@ function App() {
       {
         tab === 'login' && 
         <Suspense>
-          <Login setToken={setToken}/>
+          <Login
+            setTab={setTab}
+            setToken={setToken}
+          />
         </Suspense>   
       }
       {

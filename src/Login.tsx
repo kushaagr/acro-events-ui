@@ -4,11 +4,16 @@ import {
   Space,
   TextInput, 
   PasswordInput,
-  Button
+  Button,
+  Alert
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 
-export default function Login({ setToken }) {
+export default function Login({ setToken, setTab }) {
+
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [isLogging, setIsLogging] = useState(false);
+
   const form = useForm({
     initialValues: {
       username: '',
@@ -56,19 +61,31 @@ export default function Login({ setToken }) {
       return
     }
     
-    const token = await loginUser({
+    setIsLogging(true);
+    const res = await loginUser({
       username,
       password
     });
+    setIsLogging(false);
+    setAlertOpen(!res.success);
+    if (res.success) {
+      setTab('timeline');
+    }
 
     console.log('Done with log in process')
-    console.log("Received token is ", token);
+    console.log("Received token is ", res.token);
 
-    setToken(token);
+    setToken(res);
   }
   
   return (
     <>
+      { alertOpen && (
+        <Alert title="Invalid Credentials!" color="yellow">
+          Username or password is incorrect. Please try again
+        </Alert>
+      )}
+
       <Container py="xl" size="xs">
         <form onSubmit={handleSubmit}> 
           <TextInput
@@ -87,6 +104,7 @@ export default function Login({ setToken }) {
           <Space h='md' />
           <Button type="submit" variant="outline" uppercase 
             onClick={handleSubmit}
+            disabled={isLogging}
           >
             Submit
           </Button>
