@@ -6,7 +6,7 @@ import Carousel from './Carousel'
 import StyledImageUploader from './StyledImageUploader'
 import './Post.css'
 import ImageSlider from './ImageSlider';
-
+import { Flex, Button } from '@mantine/core'
 
 const formatDate = (date: string) => new Date(date).toISOString().split('T')[0];
 
@@ -143,24 +143,27 @@ export default function Post({ evn, removePost, isAdmin, token } : {
         >Upload images</StyledImageUploader>
         <ImageSlider data={previews}/>
 
-        <label htmlFor="description">
-          Want to describe the event?
-        </label>
-        <textarea name="description" 
-          id="description" 
-          cols={30} rows={10}
-          onChange={(e) => handleChange(e, 'description')}
-        >{formState.description}</textarea>
-
-        <button>
-          Save
-        </button>
-        <button onClick={onCancel}>
-          Cancel
-        </button>
-        <button onClick={onDelete}>
-          Delete post
-        </button>
+        <Flex direction="column">
+          <label htmlFor="description">
+            Want to describe the event?
+          </label>
+          <textarea name="description" 
+            id="description" 
+            cols={30} rows={10}
+            onChange={(e) => handleChange(e, 'description')}
+          >{formState.description}</textarea>
+        </Flex>
+        <Flex gap='md'>
+          <Button variant='outline'>
+            Save
+          </Button>
+          <Button variant='outline' onClick={onCancel}>
+            Cancel       
+          </Button>
+          <Button variant='outline' onClick={onDelete}>
+            Delete post    
+          </Button>
+        </Flex>
       </form>
     </React.Fragment>
   );

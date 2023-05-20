@@ -43,8 +43,10 @@ export default function Carousel(props: PropInterface) {
                   title: 'Event memories',
                   children: (
                     <>
-                      <img src={images[index].url} />
-                    </>                  ),
+                      <img src={images[index].url} style={{ width: '90vw' }} />
+                    </>                  
+                  ),
+                  size: 'lg',
                 });
               }}
             />
